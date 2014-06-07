@@ -1,0 +1,7 @@
+change log:
+
+2014-6-7
+1. [Asteroids] Add style of the canvas pointer-events:none to enable mouse interaction with the underlying objects.
+2. [General] Use popup html to select games.
+3. [Gravity] Add google gravity game.
+

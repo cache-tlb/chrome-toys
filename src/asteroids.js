@@ -572,6 +572,7 @@ function Asteroids() {
     bottom = "0px";
     right = "0px";
     zIndex = "10000";
+    pointerEvents = "none";
   }
   
   // Is IE
@@ -588,7 +589,7 @@ function Asteroids() {
   
   addEvent(this.canvas, 'mousedown', function(e) {
       
-      return; // we don't really want to enable this click message
+    return; // we don't really want to enable this click message
       
     e = e || window.event;
     var message = document.createElement('span');
