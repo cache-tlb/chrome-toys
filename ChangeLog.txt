@@ -1,6 +1,10 @@
 change log:
 
-2014-6-7
+2014-07-02
+1. [Pool] Add a new demo `Pool'
+2. [General] add content_script in the manifest.json to include extra js libraries.
+
+2014-06-07
 1. [Asteroids] Add style of the canvas pointer-events:none to enable mouse interaction with the underlying objects.
 2. [General] Use popup html to select games.
 3. [Gravity] Add google gravity game.

@@ -13,5 +13,11 @@
   "browser_action": {
     "default_title": "A set of Game about the Website",
     "default_popup": "popup.html"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*"],
+      "js": ["three.js", "html2canvas.js"]
+    }
+  ]
 }

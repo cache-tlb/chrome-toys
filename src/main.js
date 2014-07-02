@@ -1,7 +1,8 @@
 
 var idToJs = {
-  "asteroids": "asteroids.js", 
-  "gravity": "gravityscript.js"
+  "asteroids": "asteroids.js",
+  "gravity": "gravityscript.js",
+  "pool": "pool.js"
 };
 
 function click(e) {
