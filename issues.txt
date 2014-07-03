@@ -3,4 +3,5 @@ issues:
 Pool :
 	Add mouse event listerner
 	Add caustics
+	Add light and reflection
 	The html2canvas is not an ideal solution for rendering page to texture

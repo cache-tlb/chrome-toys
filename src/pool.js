@@ -1,4 +1,4 @@
-var displacementMap, displacementMapOld, displacementMesh;
+var displacementMap, displacementMapOld, normalShader, displacementMesh;
 var displacementMaterial, addDropMaterial, updateMaterial;
 var positive = 1;
 var cameraRTT, sceneRTT;
@@ -67,7 +67,7 @@ var planeShader = {
 	].join("\n")
 };
 
-va = {
+var normalShader = {
 	uniforms: {
 		tDiffuse: { type: "t", value: null },
 		delta: {type: "v2", value: null }
@@ -229,7 +229,7 @@ function initObject(){
 
 	displacementMap = new THREE.WebGLRenderTarget( width, height, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat, type: THREE.FloatType } );
 	displacementMapOld = displacementMap.clone();
-	displacementMaterial =  new THREE.ShaderMateria);
+	displacementMaterial =  new THREE.ShaderMaterial(normalShader);
 	addDropMaterial = new THREE.ShaderMaterial(dropShader);
 	updateMaterial = new THREE.ShaderMaterial(updateShader);
 	displacementMesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height), displacementMaterial);
@@ -261,7 +261,9 @@ function swapBuffers() {
 	displacementMap = tmp;
 }
 var delta = new THREE.Vector2(1.0/w, 1.0/h);
-function updateDisplacement() {.uniforms.delta.value = delta;.uniforms.tDiffuse.value = displacementMap;
+function updateDisplacement() {
+	normalShader.uniforms.delta.value = delta;
+	normalShader.uniforms.tDiffuse.value = displacementMap;
 	displacementMesh.material = displacementMaterial;
 	renderer.render(sceneRTT, cameraRTT, displacementMapOld, true);
 	swapBuffers();
