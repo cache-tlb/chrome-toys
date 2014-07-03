@@ -56,14 +56,13 @@ var planeShader = {
 			"float t = -1.0 * waterDepth / refractedRay.z;",
 			"vec2 floorCoord = pos.xy + t * refractedRay.xy + vec2(width * 0.5 + scrollLeft, height * 0.5 + scrollHeight - height - scrollTop);",
 			"vec2 page_coord = vec2(floorCoord.x / scrollWidth, floorCoord.y / scrollHeight);",
-			//"coord = (vUv - 1.0)*(info.r*10.0 + 1.0) + 1.0;",
-			//"vec2 coord = (vUv - 1.0)*(info.r*10.0 + 1.0) + 1.0;",
 			"gl_FragColor = texture2D(tDiffuse, page_coord) * vec4(abovewaterColor, 1.0);",
 			//"gl_FragColor = vec4(abs(page_coord.xy), 0.0, 1.0);",
-			//"gl_FragColor.r=(info.r)*1000.0;",
-			//"gl_FragColor.g=(-info.r)*1000.0;",
-			//"gl_FragColor.b=0.0;",
-			//"gl_FragColor.a=1.0;",
+			// "info = texture2D(heightMap, vUv);",
+			// "gl_FragColor.r=(info.r)*1000.0;",
+			// "gl_FragColor.g=(-info.r)*1000.0;",
+			// "gl_FragColor.b=0.0;",
+			// "gl_FragColor.a=1.0;",
 		"}"
 	].join("\n")
 };
@@ -100,7 +99,8 @@ var dropShader = {
 		tDiffuse: {type : "t", value: null},
 		center: {type: "v2", value: null},
 		radius: {type: "f", value: 0.03},
-		strength: {type: "f", value: 0.01}
+		strength: {type: "f", value: 0.01},
+		delta: {type: "v2", value: null}
 	},
 
 	vertexShader: [
@@ -116,11 +116,15 @@ var dropShader = {
 		"varying vec2 vUv;",
 		"uniform sampler2D tDiffuse;",
 		"uniform vec2 center;",
+		"uniform vec2 delta;",
 		"uniform float radius;",
 		"uniform float strength;",
 		"void main() {",
 			"vec4 info = texture2D(tDiffuse, vUv);",
-			"float drop = max(0.0, 1.0 - length(center * 0.5 + 0.5 - vUv) / radius);",
+			"vec2 dist = center - vUv;",
+			"dist.x *= (delta.x + delta.y) / delta.x;",
+			"dist.y *= (delta.x + delta.y) / delta.y;",
+			"float drop = max(0.0, 1.0 - length(dist) / radius);",
 			"drop = 0.5 - cos(drop * PI) * 0.5;",
 			"info.r += drop * strength;",
 			"gl_FragColor = info;",
@@ -271,11 +275,7 @@ function pause() {
 	isPause = !isPause;
 }
 
-function animate_() {
-	requestAnimationFrame( animate_ );
-	if (isPause) return;
-	stepSimulation();
-	updateDisplacement();
+function draw() {
 	planeShader.uniforms.tDiffuse.value = bg;
 	planeShader.uniforms.heightMap.value = displacementMap;
 	planeShader.uniforms.height.value = height;
@@ -286,18 +286,28 @@ function animate_() {
 	planeShader.uniforms.scrollTop.value = document.body.scrollTop;
 	planeShader.uniforms.waterDepth.value = (width + height) / 6.0;
 	renderer.render( scene, camera );
+}
+
+function animate_() {
+	requestAnimationFrame( animate_ );
+	if (isPause) return;
+	stepSimulation();
+	updateDisplacement();
+	draw();
 	//renderer.render( sceneRTT, cameraRTT );
 }
 //animate();
 
 function addDrop(x, y, radius, strength) {
 	dropShader.uniforms.tDiffuse.value = displacementMap;
-	dropShader.uniforms.center.value = new THREE.Vector2(x*2 - 1, y*2 - 1);
+	dropShader.uniforms.center.value = new THREE.Vector2(x, y);
+	dropShader.uniforms.delta.value = delta;
 	dropShader.uniforms.radius.value = radius;
 	dropShader.uniforms.strength.value = strength;
 	displacementMesh.material = addDropMaterial;
 	renderer.render(sceneRTT, cameraRTT, displacementMapOld, true);
 	swapBuffers();
+	draw();
 }
 
 function stepSimulation() {
@@ -349,6 +359,8 @@ var onresize = function (event) {
 	});
 	threeStart();
 	bg = THREE.ImageUtils.loadTexture(fullImage);
+	delta = new THREE.Vector2(1.0/w, 1.0/h);
+	draw();
 	isPause = false;
 };
 
@@ -359,6 +371,7 @@ function addListerners() {
 }
 
 addListerners();
+
 
 var delayed_func = function () {
 	// maybe all other stuff should be included inside this function
