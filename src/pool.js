@@ -358,7 +358,7 @@ var onresize = function (event) {
 	  allowTaint:false
 	});
 	threeStart();
-	bg = THREE.ImageUtils.loadTexture(fullImage);
+	setTimeout("bg = THREE.ImageUtils.loadTexture(fullImage);", 500);
 	delta = new THREE.Vector2(1.0/w, 1.0/h);
 	draw();
 	isPause = false;
