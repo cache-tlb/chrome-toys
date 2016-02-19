@@ -4,7 +4,7 @@ This a Chrome extension containing some games with the HTML elements.
 #### Content
 - Asteroids
 
-In this little game, you control a triangle-shaped spaceship using keyboard. Use arrow keys to move and space key to shoot bullets. When a bullet hit some HTML element, the element may explode.
+In this little game, you control a triangle-shaped spaceship using keyboard. Use arrow keys to move and space key to shoot bullets. When a bullet hit an asteroid (ie, an HTML element), the asteroid may explode.
 
 ![asteroids](./screenshot/asteroids.png "asteroids")
 
